@@ -1,0 +1,39 @@
+# Build directory
+/build/
+/CMakeFiles/
+/CMakeCache.txt
+/cmake_install.cmake
+/Makefile
+/*.sln
+/*.vcxproj*
+/compile_commands.json
+
+# Generated binaries
+*.exe
+*.dll
+*.lib
+*.a
+*.pdb
+
+# VS Code settings (optional: keep `.vscode/` if you share settings)
+.vscode/
+*.code-workspace
+
+# SFML debug dump
+sfml-debug.log
+
+# Windows system files
+Thumbs.db
+Desktop.ini
+
+# Mac system files (if collaborating cross-platform)
+.DS_Store
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+*~
+
+# CMake user presets (only if you're using them)
+CMakeUserPresets.json
