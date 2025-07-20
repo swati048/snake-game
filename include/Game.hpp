@@ -28,6 +28,7 @@ private:
     Food food;
     Score score;
 
+    const float topBarHeight = 40.f;
     std::vector<sf::RectangleShape> walls;
     const float WALL_THICKNESS = 20.0f;
 

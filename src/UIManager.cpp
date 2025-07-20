@@ -136,6 +136,18 @@ void UIManager::drawMenuUI(sf::RenderWindow& window) {
 // GAME OVER screen
 void UIManager::drawGameOverUI(sf::RenderWindow& window, int score, int highScore) {
     window.draw(gameOverBackground);
+    // Score
+    sf::Text scoreText("Score: " + std::to_string(score), font, 28);
+    scoreText.setFillColor(sf::Color(255, 105, 180));
+    scoreText.setPosition(20.f, 20.f);
+    window.draw(scoreText);
+
+    // High Score
+    sf::Text highScoreText("High Score: " + std::to_string(highScore), font, 28);
+    highScoreText.setFillColor(sf::Color(255, 105, 180));
+    highScoreText.setPosition(20.f, 50.f);
+    window.draw(highScoreText);
+    
     for (const auto& btn : gameOverButtons)
         btn.draw(window);
 }

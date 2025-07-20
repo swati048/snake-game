@@ -18,7 +18,7 @@ void Snake::init() {
     direction = {blockSize, 0};
 
     const int initialLength = 3;
-    sf::Vector2f startPos(blockSize * 5, blockSize * 5);
+    sf::Vector2f startPos(blockSize * 5, topBarHeight + blockSize * 5);
 
     for (int i = 0; i < initialLength; ++i) {
         sf::Sprite segment;
@@ -61,8 +61,8 @@ void Snake::update(int windowWidth, int windowHeight, bool wallsEnabled) {
         if (pos.x < 0) pos.x = windowWidth - blockSize;
         else if (pos.x >= windowWidth) pos.x = 0;
 
-        if (pos.y < 0) pos.y = windowHeight - blockSize;
-        else if (pos.y >= windowHeight) pos.y = 0;
+        if (pos.y < topBarHeight) pos.y = windowHeight - blockSize;
+        else if (pos.y >= windowHeight) pos.y = topBarHeight;
     }
     // snapping block
     pos.x = std::round(pos.x / blockSize) * blockSize;
@@ -107,19 +107,6 @@ void Snake::setDirection(const sf::Vector2f& newDir) {
     }
 }
 
-bool Snake::hasCollidedWithSelf() const {
-    if (body.size() < 4) return false;
-    if (justGrew) return false;
-
-    const sf::Vector2f headPos = body.front().getPosition();
-    for (size_t i = 1; i < body.size(); ++i) {
-        if (body[i].getPosition() == headPos) {
-            return true;
-        }
-    }
-    return false;
-}
-
 std::vector<sf::Vector2f> Snake::getBodyPositions() const {
     std::vector<sf::Vector2f> positions;
     for (const auto& segment : body) {
@@ -128,3 +115,14 @@ std::vector<sf::Vector2f> Snake::getBodyPositions() const {
     return positions;
 }
 
+sf::Vector2f Snake::getNextHeadPosition() const {
+    return body.front().getPosition() + direction;
+}
+
+bool Snake::willCollideWithSelf(const sf::Vector2f& nextPos) const {
+    if (body.size() < 4 || justGrew) return false;
+    for (size_t i = 1; i < body.size(); ++i) {
+        if (body[i].getPosition() == nextPos) return true;
+    }
+    return false;
+}

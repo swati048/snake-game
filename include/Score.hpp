@@ -6,7 +6,6 @@ public:
     Score();
 
     void increase();
-    void draw(sf::RenderWindow& window) const;
     void reset();
     int getValue() const;
     void loadHighScore();
@@ -15,7 +14,5 @@ public:
 
 private:
     int score;
-    sf::Font font;
-    sf::Text text;
     int highScore;
 };
