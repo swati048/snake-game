@@ -94,6 +94,9 @@ int main() {
         else if (gameState == GameState::GAME_OVER) {
             uiManager.drawGameOverUI(window, game.getScore(), game.getHighScore());
         }
+        else if (gameState == GameState::INSTRUCTIONS) {
+            uiManager.drawInstructionsUI(window);
+        }
 
         uiManager.draw(window);
         window.display();

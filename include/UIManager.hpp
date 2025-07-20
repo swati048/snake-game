@@ -19,6 +19,7 @@ public:
     void drawGameOverUI(sf::RenderWindow& window, int score, int highScore);
     void drawMenuUI(sf::RenderWindow& window);
     void drawGameBackground(sf::RenderWindow& window);
+    void drawInstructionsUI(sf::RenderWindow& window);
 
     void applyTextureScaling(sf::Sprite& sprite, sf::Texture& texture);
 
@@ -38,6 +39,7 @@ private:
 
     std::vector<UIButton> menuButtons;
     std::vector<UIButton> gameOverButtons;
+    std::vector<UIButton> instructionsButtons;
 
     bool wallsEnabled = false; 
     sf::Font font;

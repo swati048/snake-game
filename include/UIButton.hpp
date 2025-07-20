@@ -12,16 +12,15 @@ public:
     bool handleClick(const sf::Vector2f& point);
 
     void setText(const std::string& newText);
-    const std::string& getText() const;
+    const std::string getText() const;
 
     sf::Vector2f getPosition() const;
     sf::Vector2f getSize() const;
     sf::FloatRect getGlobalBounds() const;
 
-private:
-    sf::RectangleShape shape;
-    sf::Text text;
-    std::string label;
+    void setPosition(const sf::Vector2f& pos);
+    void centerHorizontally(float totalWidth);
 
-    void centerText();
+private:
+    sf::Text text;
 };

@@ -19,8 +19,9 @@ UIManager::UIManager(const sf::Vector2u& windowSize)
 }
 
 void UIManager::loadResources() {
-    if (!font.loadFromFile("resources/ARIAL.TTF")) {
-        std::cerr << "Failed to load font!" << std::endl;
+
+    if (!font.loadFromFile("resources/CherryBombOne-Regular.ttf")) {
+        std::cerr << "Failed to load Cherry Bomb font!" << std::endl;
     }
 
     if (!bgTexture.loadFromFile("resources/background.png")) {
@@ -49,11 +50,21 @@ void UIManager::loadResources() {
     menuButtons.emplace_back(menuBase + sf::Vector2f(0.f, 60.f), font, "WallsEnabled: OFF");
     menuButtons.emplace_back(menuBase + sf::Vector2f(0.f, 120.f), font, "Instructions");
 
-    sf::Vector2f overBase(330.f, 240.f);  // centered in box
+    sf::Vector2f overBase(330.f, 240.f);  
     // Game Over Buttons
     gameOverButtons.emplace_back(overBase, font, "Restart");
     gameOverButtons.emplace_back(overBase + sf::Vector2f(0.f, 60.f), font, "Menu");
     gameOverButtons.emplace_back(overBase + sf::Vector2f(0.f, 120.f), font, "Exit");  
+
+    for (auto& btn : menuButtons)
+        btn.centerHorizontally(windowSize.x);  // Center across entire window
+
+    for (auto& btn : gameOverButtons)
+        btn.centerHorizontally(windowSize.x);  
+    
+    sf::Vector2f instrBase(330.f, 460.f);  // Back button at bottom of board
+    instructionsButtons.emplace_back(instrBase, font, "Back");
+    instructionsButtons[0].centerHorizontally(windowSize.x);
 }
 
 void UIManager::handleMouseHover(const sf::Vector2f& mousePos) {
@@ -64,6 +75,11 @@ void UIManager::handleMouseHover(const sf::Vector2f& mousePos) {
     else if (pendingState == GameState::GAME_OVER) {
         for (auto& btn : gameOverButtons)
             btn.setHover(btn.contains(mousePos));
+    }
+    else if (pendingState == GameState::INSTRUCTIONS) {
+        for (auto& btn : instructionsButtons) {
+            btn.setHover(btn.contains(mousePos));
+        }
     }
 }
 
@@ -78,9 +94,9 @@ void UIManager::handleMouseClick(const sf::Vector2f& mousePos) {
                     wallsEnabled = !wallsEnabled;
                     btn.setText(wallsEnabled ? "WallsEnabled: ON" : "WallsEnabled: OFF");
                 } else if (label == "Instructions") {
-                    // Add instruction screen state or logic if needed
-                    std::cout << "Show instructions screen (not yet implemented)\n";
+                    startFade(GameState::INSTRUCTIONS); 
                 }
+
             }
         }
     }
@@ -98,6 +114,16 @@ void UIManager::handleMouseClick(const sf::Vector2f& mousePos) {
             }
         }
     }
+    else if (pendingState == GameState::INSTRUCTIONS) {
+        for (auto& btn : instructionsButtons) {
+            if (btn.handleClick(mousePos)) {
+                if (btn.getText() == "Back") {
+                    startFade(GameState::MENU);
+                }
+            }
+        }
+    }
+
 }
 
 // MENU screen
@@ -110,10 +136,38 @@ void UIManager::drawMenuUI(sf::RenderWindow& window) {
 // GAME OVER screen
 void UIManager::drawGameOverUI(sf::RenderWindow& window, int score, int highScore) {
     window.draw(gameOverBackground);
-    
-    // [Existing score drawing code here...]
-
     for (const auto& btn : gameOverButtons)
+        btn.draw(window);
+}
+
+void UIManager::drawInstructionsUI(sf::RenderWindow& window) {
+
+    sf::Vector2f size(static_cast<float>(windowSize.x), static_cast<float>(windowSize.y));
+    sf::RectangleShape background(size);
+    background.setFillColor(sf::Color(50, 50, 50)); // dark gray background
+    window.draw(background);
+
+    // Static text block
+    sf::Text title("Instructions", font, 36);
+    title.setStyle(sf::Text::Bold | sf::Text::Underlined);
+    title.setFillColor(sf::Color::Cyan);
+    title.setPosition(windowSize.x / 2.f - title.getGlobalBounds().width / 2.f, 100);
+    window.draw(title);
+
+    std::string textBlock =
+        "- Use Arrow Keys to move the snake\n"
+        "- Eat the red apple to grow\n"
+        "- Avoid crashing into yourself or walls\n"
+        "- Toggle wall enable in menu\n"
+        "- Press 'P' to pause during gameplay";
+
+    sf::Text instructions(textBlock, font, 22);
+    instructions.setFillColor(sf::Color::Cyan);
+    instructions.setPosition(100, 180);  // You can center or align as needed
+    window.draw(instructions);
+
+    // Draw "Back" button
+    for (const auto& btn : instructionsButtons)
         btn.draw(window);
 }
 
