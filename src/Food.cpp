@@ -10,6 +10,7 @@ Food::Food() : blockSize(20.f) {
     if (!textureLoaded) {
         if (!foodTexture.loadFromFile("resources/food.png")) {
             std::cerr << "Failed to load food.png\n";
+            throw std::runtime_error("Required texture missing");
         }
         textureLoaded = true;
     }
