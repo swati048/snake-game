@@ -22,14 +22,26 @@ void Game::reset(int windowWidth, int windowHeight) {
     speedMultiplier = 1.0f;
     moveDelay = baseMoveDelay;
     timer = 0.0f;
+    // Clear any active visual effects
+    particleSystem.clear();
 }
 
 void Game::update(float deltaTime, int windowWidth, int windowHeight, bool wallsEnabled) {
-    if (gameOver || paused) return;
+    if (gameOver || paused) {
+        // Still update visual effects even when game is paused/over
+        particleSystem.update(deltaTime);
+        scorePopup.update(deltaTime);
+        return;
+    }
     this->wallsEnabled = wallsEnabled;
 
     timer += deltaTime;
-    if (timer < moveDelay) return;
+    if (timer < moveDelay) {
+        // Update visual effects even between moves
+        particleSystem.update(deltaTime);
+        scorePopup.update(deltaTime);
+        return;
+    }
 
     timer = 0.f;
 
@@ -54,6 +66,24 @@ void Game::update(float deltaTime, int windowWidth, int windowHeight, bool walls
     // --- 4. Game Over if Any Collision ---
     if (wallHit || selfHit) {
         gameOver = true;
+
+        // Create dramatic explosion effect at snake head position
+        sf::Vector2f headPos = snake.getHeadBounds().getPosition();
+        sf::Vector2f headCenter = headPos + sf::Vector2f(speed / 2.f, speed / 2.f);
+        
+        // Explosion with 5 particles
+        particleSystem.createExplosion(headCenter, 5, sf::Color(255, 0, 0));
+        
+        // Additional smaller bursts around the head for more dramatic effect
+        for (int i = 0; i < 3; ++i) {
+            float offsetX = (rand() % 20 - 10);
+            float offsetY = (rand() % 20 - 10);
+            particleSystem.createExplosion(
+                headCenter + sf::Vector2f(offsetX, offsetY), 
+                1, 
+                sf::Color(255, 100, 0)  // Orange
+            );
+        }
         std::cout << "Game Over! Collision Detected.\n";
         return;
     }
@@ -64,6 +94,19 @@ void Game::update(float deltaTime, int windowWidth, int windowHeight, bool walls
     // --- 6. Check for Food Collision ---
     if (snake.checkCollisionWithFood(food.getPosition(), food.getSize())) {
         snake.shouldGrow = true;
+        // Create particle burst effect at food position
+        particleSystem.createBurst(
+            food.getPosition() + sf::Vector2f(food.getSize() / 2.f, food.getSize() / 2.f),
+            15,  // Number of particles
+            sf::Color(207, 71, 222)
+        );
+        // Create score popup
+        scorePopup.create(
+            food.getPosition() + sf::Vector2f(food.getSize() / 2.f, -10.f),
+            1,  // Points earned
+            font
+        );
+
         food.spawn(windowWidth, windowHeight, snake.getBodyPositions(), wallsEnabled);
         score.increase();
         score.saveHighScore();
@@ -74,6 +117,9 @@ void Game::update(float deltaTime, int windowWidth, int windowHeight, bool walls
             moveDelay = baseMoveDelay / speedMultiplier;
         }
     }
+    // Update visual effects
+    particleSystem.update(deltaTime);
+    scorePopup.update(deltaTime);
 }
 
 void Game::draw(sf::RenderWindow& window) {
@@ -109,6 +155,10 @@ void Game::draw(sf::RenderWindow& window) {
     }
     food.draw(window);
     snake.draw(window);
+
+    // Draw visual effects
+    particleSystem.draw(window);
+    scorePopup.draw(window);
     
     if (paused) {
         sf::Text pausedText("Paused", font, 32);

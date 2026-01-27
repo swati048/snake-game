@@ -4,6 +4,7 @@
 #include "Food.hpp"
 #include "Score.hpp"
 #include "GameState.hpp"
+#include "ParticleSystem.hpp"
 
 class Game {
 public:
@@ -27,6 +28,10 @@ private:
     Snake snake;
     Food food;
     Score score;
+
+    // Visual effects
+    ParticleSystem particleSystem;
+    ScorePopup scorePopup;
 
     const float topBarHeight = 40.f;
     std::vector<sf::RectangleShape> walls;
