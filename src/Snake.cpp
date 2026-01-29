@@ -7,7 +7,7 @@ Snake::Snake() : blockSize(20.f) {
     // Load textures
     headTexture.loadFromFile("resources/snake_head.png");
     bodyTexture.loadFromFile("resources/snake_body.png");
-    // Now initialize snake body
+    // Now initialize snake body with default position and direction
     init();
 }
 
@@ -15,8 +15,9 @@ void Snake::init() {
 
     shouldGrow = false;
     justGrew = false;
-    direction = {blockSize, 0};
+    direction = {blockSize, 0};     // Start moving right
 
+    // Create initial snake with 3 segments
     const int initialLength = 3;
     sf::Vector2f startPos(blockSize * 5, topBarHeight + blockSize * 5);
 
@@ -46,6 +47,7 @@ void Snake::reset() {
 void Snake::update(int windowWidth, int windowHeight, bool wallsEnabled) {
     if (body.empty()) return;
 
+    // Create new head segment at next position
     sf::Sprite newHead = body.front();
     newHead.move(direction);
     newHead.setTexture(headTexture);
@@ -56,7 +58,7 @@ void Snake::update(int windowWidth, int windowHeight, bool wallsEnabled) {
     // Get and snap position to grid
     sf::Vector2f pos = newHead.getPosition();
 
-    // Handle wrap around
+    // Handle screen wrapping when walls are disabled
     if (!wallsEnabled) {
         if (pos.x < 0) pos.x = windowWidth - blockSize;
         else if (pos.x >= windowWidth) pos.x = 0;
@@ -64,21 +66,22 @@ void Snake::update(int windowWidth, int windowHeight, bool wallsEnabled) {
         if (pos.y < topBarHeight) pos.y = windowHeight - blockSize;
         else if (pos.y >= windowHeight) pos.y = topBarHeight;
     }
-    // snapping block
+    // Snap to grid to prevent sub-pixel misalignment
     pos.x = std::round(pos.x / blockSize) * blockSize;
     pos.y = std::round(pos.y / blockSize) * blockSize;
-    // Apply snapped position
+    // Apply snapped position to new head
     newHead.setPosition(pos);
-    // Continue update logic
+    // Add new head to front of snake
     body.push_front(newHead);
 
+    // Handle growth: if shouldGrow is true, keep the tail; otherwise remove it
     if (!shouldGrow) {
         body.pop_back();
     } else {
         shouldGrow = false;
         justGrew = true;
     }
-    // Make sure the second segment becomes body
+    // Ensure second segment uses body texture
     if (body.size() > 1) {
         body[1].setTexture(bodyTexture);
         body[1].setScale(
@@ -86,7 +89,8 @@ void Snake::update(int windowWidth, int windowHeight, bool wallsEnabled) {
             blockSize / static_cast<float>(bodyTexture.getSize().y)
         );
     }
-    // future-proof
+    
+    // Reset growth flag
     if (justGrew) justGrew = false;
 }
 
@@ -109,6 +113,7 @@ void Snake::setDirection(const sf::Vector2f& newDir) {
 
 std::vector<sf::Vector2f> Snake::getBodyPositions() const {
     std::vector<sf::Vector2f> positions;
+    positions.reserve(body.size());  // Memory optimization
     for (const auto& segment : body) {
         positions.push_back(segment.getPosition());
     }
@@ -120,7 +125,9 @@ sf::Vector2f Snake::getNextHeadPosition() const {
 }
 
 bool Snake::willCollideWithSelf(const sf::Vector2f& nextPos) const {
+    // Snake too short to collide with itself
     if (body.size() < 4 || justGrew) return false;
+    // Check collision with body segments (skip head at index 0)
     for (size_t i = 1; i < body.size(); ++i) {
         if (body[i].getPosition() == nextPos) return true;
     }

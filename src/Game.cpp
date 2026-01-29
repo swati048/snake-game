@@ -71,8 +71,8 @@ void Game::update(float deltaTime, int windowWidth, int windowHeight, bool walls
         sf::Vector2f headPos = snake.getHeadBounds().getPosition();
         sf::Vector2f headCenter = headPos + sf::Vector2f(speed / 2.f, speed / 2.f);
         
-        // Explosion with 5 particles
-        particleSystem.createExplosion(headCenter, 5, sf::Color(255, 0, 0));
+        // Large explosion with 40 particles
+        particleSystem.createExplosion(headCenter, 40, sf::Color(255, 0, 0));
         
         // Additional smaller bursts around the head for more dramatic effect
         for (int i = 0; i < 3; ++i) {
@@ -80,7 +80,7 @@ void Game::update(float deltaTime, int windowWidth, int windowHeight, bool walls
             float offsetY = (rand() % 20 - 10);
             particleSystem.createExplosion(
                 headCenter + sf::Vector2f(offsetX, offsetY), 
-                1, 
+                15, 
                 sf::Color(255, 100, 0)  // Orange
             );
         }

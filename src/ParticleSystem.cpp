@@ -97,7 +97,7 @@ void ParticleSystem::createExplosion(const sf::Vector2f& position, int count, co
         particleColor.b = static_cast<sf::Uint8>(std::max(0, particleColor.b + (rand() % 50 - 25)));
         
         float lifetime = 0.8f + (rand() % 100) / 100.0f;  // 0.8 to 1.8 seconds
-        float size = 4.0f + (rand() % 3);  // (larger than regular burst)
+        float size = 4.0f + (rand() % 5);  // 4 to 8 pixels (larger than regular burst)
         
         particles.emplace_back(position, velocity, particleColor, lifetime, size);
     }
@@ -112,7 +112,7 @@ void ScorePopup::create(const sf::Vector2f& position, int points, const sf::Font
     text.setFont(font);
     text.setString("+" + std::to_string(points));
     text.setCharacterSize(24);
-    text.setFillColor(sf::Color(255, 215, 0));  // Gold color
+    text.setFillColor(sf::Color(232, 156, 42));  
     text.setStyle(sf::Text::Bold);
     
     // Center the text at the position
