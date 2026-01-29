@@ -310,7 +310,7 @@ Contributions are welcome! Feel free to:
 
 ## 👤 Author
 
-**[Swati Thakur]**
+**Swati Thakur**
 - GitHub: [@swati048](https://github.com/swati048)
 - LinkedIn: [Swati Thakur](https://linkedin.com/in/swati048)
 - Email: [thakurswati048@gmail.com](mailto:thakurswati048@gmail.com)
