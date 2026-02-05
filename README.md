@@ -1,4 +1,4 @@
-# 🐍 Serpent Bites - Modern Snake Game
+# 🐍 Serpent Bites - Classical Snake Game
 
 A polished, feature-rich implementation of the classic Snake game built with C++ and SFML. This project showcases clean code architecture, smooth gameplay mechanics, and engaging visual effects.
 
@@ -125,7 +125,7 @@ A polished, feature-rich implementation of the classic Snake game built with C++
 
 2. **Clone and Build**
    ```bash
-   git clone https://github.com/yourusername/snake-game.git
+   git clone https://github.com/swati048/snake-game.git
    cd snake-game
    mkdir build && cd build
    cmake ..
@@ -148,7 +148,7 @@ A polished, feature-rich implementation of the classic Snake game built with C++
 
 2. **Clone and Build**
    ```bash
-   git clone https://github.com/yourusername/snake-game.git
+   git clone https://github.com/swati048/snake-game.git
    cd snake-game
    mkdir build && cd build
    cmake ..
